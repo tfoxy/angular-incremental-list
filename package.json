@@ -1,0 +1,33 @@
+{
+  "name": "angular-incremental-list",
+  "version": "0.0.0",
+  "description": "List that auto-increments and decrements",
+  "main": "./angular-incremental-list",
+  "scripts": {
+    "test": "karma start karma.conf.js --single-run",
+    "min": "uglifyjs angular-incremental-list.js --comments '/^!/' --compress --mangle -o angular-incremental-list.min.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/tfoxy/angular-incremental-list"
+  },
+  "bugs": {
+    "url": "https://github.com/tfoxy/angular-incremental-list/issues"
+  },
+  "keywords": [
+    "angular",
+    "list",
+    "incremental",
+    "ngRepeat"
+  ],
+  "devDependencies": {
+    "karma": "0.12.x",
+    "karma-mocha": "0.2.x",
+    "karma-chai": "0.1.x",
+    "karma-sinon": "1.0.x",
+    "karma-phantomjs-launcher": "0.2.x",
+    "karma-chrome-launcher": "0.2.x"
+  },
+  "author": "Tomás Fox <tomas.c.fox@gmail.com>",
+  "license": "MIT"
+}

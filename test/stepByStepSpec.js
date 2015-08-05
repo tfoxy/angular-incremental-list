@@ -32,7 +32,7 @@ describe('incrementalList-steps', function() {
             '</li></ol>';
     var element = compileAndDigest(t);
     var ilListCtrl = element.find('li').controller('ilList');
-    ilListCtrl.listItemChanged(element.find('input').last().scope());
+    ilListCtrl.listItemChanged(scope.list.length - 1);
     scope.$digest();
 
     expect(scope.list).to.have.property('length', 3);
@@ -40,7 +40,7 @@ describe('incrementalList-steps', function() {
     var lastItem = scope.list[scope.list.length - 1];
     lastItem.x = 1;
     lastItem.y = 2;
-    ilListCtrl.listItemChanged(element.find('input').last().scope());
+    ilListCtrl.listItemChanged(scope.list.length - 1);
     scope.$digest();
 
     expect(scope.list).to.have.property('length', 4);

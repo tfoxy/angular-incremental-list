@@ -1,5 +1,5 @@
 /*!
- * angular-incremental-list v0.1.0
+ * angular-incremental-list v0.1.1
  * https://github.com/tfoxy/angular-incremental-list
  *
  * Copyright 2015 Tomás Fox

@@ -46,7 +46,7 @@ angular.module('myApp', ['incrementalList', ...])
 <!-- First and last name are required, but age is optional -->
 <ul>
   <li ng-repeat="person in list" il-list="list" il-increment-on="person.firstName && person.lastName">
-    <input type="text" ng-model="person.fistName" il-item-model required>
+    <input type="text" ng-model="person.firstName" il-item-model required>
     <input type="text" ng-model="person.lastName" il-item-model required>
     <input type="number" ng-model="person.age" il-item-model>
   </li>
@@ -58,10 +58,10 @@ angular.module('myApp', ['incrementalList', ...])
 ## Directives
 
   - `ilList`: Indicates the list that will auto-increment or decrement.
-    Generally used in conjunction with `ngRepeat`.
+    Used in conjunction with `ngRepeat`.
     All the other directives require this one.
   - `ilItemModel`: Notify of changes on the list. Requires `ngModel` directive.
-  - `ilNewItem`: The item that is pushed to the list when it is incremented.
+  - `ilNewItem`: Indicates the item that is pushed to the list when it is incremented.
     It is evaluated with the scope of the last item.
     Default: `{}`.
   - `ilIncrementOn`: The conditions that must be met to increment the list.

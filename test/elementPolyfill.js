@@ -20,4 +20,10 @@
       return this.eq(-1);
     };
   }
+
+  if (!('first' in prototype)) {
+    prototype.first = function() {
+      return this.eq(0);
+    };
+  }
 })();

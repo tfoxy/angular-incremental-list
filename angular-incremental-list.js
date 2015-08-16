@@ -69,9 +69,19 @@
             scope.$eval(attrs.ilItemModel) :
             scope;
 
-        ngModelCtrl.$viewChangeListeners.push(function() {
-          ilListCtrl.listItemChanged(selectedScope.$index);
-        });
+        var localScope = {
+          ilList: {
+            changed: {
+              ngModelController: ngModelCtrl
+            }
+          }
+        };
+
+        var listener = function() {
+          ilListCtrl.listItemChanged(selectedScope.$index, localScope);
+        };
+
+        ngModelCtrl.$viewChangeListeners.push(listener);
       }
     };
   }
@@ -95,8 +105,8 @@
       require: 'ilList',
       priority: PRIORITY,
       link: function(scope, element, attrs, ctrl) {
-        ctrl.mustIncrement = function(lastItemScope) {
-          return lastItemScope.$eval(attrs.ilIncrementOn);
+        ctrl.mustIncrement = function(lastItemScope, localScope) {
+          return lastItemScope.$eval(attrs.ilIncrementOn, localScope);
         };
       }
     };
@@ -108,8 +118,8 @@
       require: 'ilList',
       priority: PRIORITY,
       link: function(scope, element, attrs, ctrl) {
-        ctrl.mustDecrement = function(itemScope) {
-          return itemScope.$eval(attrs.ilDecrementOn);
+        ctrl.mustDecrement = function(itemScope, localScope) {
+          return itemScope.$eval(attrs.ilDecrementOn, localScope);
         };
       }
     };
@@ -124,11 +134,11 @@
         var parentCtrl = ctrl[0];
         var elementCtrl = ctrl[1];
 
-        elementCtrl.notifyParentList = function(scope) {
+        elementCtrl.notifyParentList = function(scope, localScope) {
           var parentScope = attrs.ilListModel ?
               scope.$eval(attrs.ilListModel) :
               scope.$parent;
-          parentCtrl.listItemChanged(parentScope.$index);
+          parentCtrl.listItemChanged(parentScope.$index, localScope);
         };
       }
     };
@@ -149,7 +159,7 @@
 
     //////////
 
-    function listItemChanged(index) {
+    function listItemChanged(index, localScope) {
       if (typeof index !== 'number') {
         throw new Error('scope.$index is not a number. Got: ' + index);
       }
@@ -158,12 +168,12 @@
       var scope = getScope(index);
 
       if (index === length - 1) {
-        lastItemChanged(scope);
+        lastItemChanged(scope, localScope);
       } else if (index === length - 2) {
-        checkDecrementConditions(scope);
+        checkDecrementConditions(scope, localScope);
       }
 
-      vm.notifyParentList(scope);
+      vm.notifyParentList(scope, localScope);
     }
 
     function getScope(index) {
@@ -181,32 +191,33 @@
       return getScope(scope.$index + 1);
     }
 
-    function lastItemChanged(scope) {
-      if (vm.mustIncrement(scope)) {
+    function lastItemChanged(scope, localScope) {
+      if (vm.mustIncrement(scope, localScope)) {
         vm.list.push(vm.createItem(scope));
       } else if (!scope.$first) {
-        checkDecrementConditions(scope);
+        checkDecrementConditions(scope, localScope);
       }
     }
 
-    function checkDecrementConditions(scope) {
+    function checkDecrementConditions(scope, localScope) {
       var otherScope = scope.$last ? prevScope(scope) : nextScope(scope);
 
-      if (vm.mustDecrement(scope) && vm.mustDecrement(otherScope)) {
+      if (vm.mustDecrement(scope, localScope) &&
+          vm.mustDecrement(otherScope, localScope)) {
         if (!scope.$last) {
           vm.list.pop();
         }
 
-        removeEmptyItems(prevScope(scope));
+        removeEmptyItems(prevScope(scope), localScope);
       }
     }
 
-    function removeEmptyItems(scope) {
+    function removeEmptyItems(scope, localScope) {
       var from, to, auxScope = scope;
       from = to = vm.list.length - 2;
 
       for (; from >= 0; --from, auxScope = prevScope(auxScope)) {
-        if (!vm.mustDecrement(auxScope)) {
+        if (!vm.mustDecrement(auxScope, localScope)) {
           break;
         }
       }
@@ -215,10 +226,6 @@
     }
 
     function defaultMustDecrement(scope) {
-      return !defaultMustIncrement(scope);
-    }
-
-    function defaultMustIncrement(scope) {
       var item = vm.list[scope.$index];
 
       for (var key in item) {
@@ -226,12 +233,17 @@
           var v = item[key];
           if (angular.isDefined(v) && v !== null && v !== '' &&
               (!Array.isArray(v) || v.length > 1)) {
-            return true;
+            return false;
           }
         }
       }
 
-      return false;
+      return true;
+    }
+
+    function defaultMustIncrement(scope, localScope) {
+      var value = localScope.ilList.changed.ngModelController.$modelValue;
+      return value || value === 0;
     }
 
     function createItem() {

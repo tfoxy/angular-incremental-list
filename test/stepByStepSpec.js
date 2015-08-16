@@ -22,25 +22,29 @@ describe('incrementalList-steps', function() {
       {x: 8, y: 1},
       {},
       {},
-      {}
+      {x: 1}
     ];
     var t = '<ol><li ng-repeat="item in list" il-list="list"' +
             ' il-increment-on="item.x && item.y">' +
-            '<input type="number" ng-model="item.x">' +
-            '<input type="number" ng-model="item.y">' +
-            '<input type="text" ng-model="item.name">' +
+            '<input type="number" ng-model="item.x" name="x" il-item-model>' +
+            '<input type="number" ng-model="item.y" name="y" il-item-model>' +
+            '<input type="text" ng-model="item.name" name="name" il-item-model>' +
             '</li></ol>';
     var element = compileAndDigest(t);
-    var ilListCtrl = element.find('li').controller('ilList');
-    ilListCtrl.listItemChanged(scope.list.length - 1);
+    var ngModelCtrl = element.find('li').last().find('input').first().controller('ngModel');
+    ngModelCtrl.$setViewValue('');
     scope.$digest();
 
     expect(scope.list).to.have.property('length', 3);
 
-    var lastItem = scope.list[scope.list.length - 1];
-    lastItem.x = 1;
-    lastItem.y = 2;
-    ilListCtrl.listItemChanged(scope.list.length - 1);
+    ngModelCtrl = element.find('li').last().find('input').first().controller('ngModel');
+    ngModelCtrl.$setViewValue('1');
+    scope.$digest();
+
+    expect(scope.list).to.have.property('length', 3);
+
+    ngModelCtrl = element.find('li').last().find('input').eq(1).controller('ngModel');
+    ngModelCtrl.$setViewValue('2');
     scope.$digest();
 
     expect(scope.list).to.have.property('length', 4);

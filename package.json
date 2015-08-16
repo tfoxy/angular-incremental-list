@@ -21,12 +21,17 @@
     "ngRepeat"
   ],
   "devDependencies": {
+    "chai": "^3.2.0",
     "karma": "0.12.x",
-    "karma-mocha": "0.2.x",
     "karma-chai": "0.1.x",
-    "karma-sinon": "1.0.x",
+    "karma-chrome-launcher": "0.2.x",
+    "karma-mocha": "0.2.x",
     "karma-phantomjs-launcher": "0.2.x",
-    "karma-chrome-launcher": "0.2.x"
+    "karma-sinon": "1.0.x",
+    "mocha": "^2.2.5",
+    "phantomjs": "^1.9.18",
+    "phantomjs-polyfill": "0.0.1",
+    "sinon": "^1.15.4"
   },
   "author": "Tomás Fox <tomas.c.fox@gmail.com>",
   "license": "MIT"

@@ -9,7 +9,8 @@
 (function() {
   'use strict';
 
-  var PRIORITY = 2000;
+  var MAIN_PRIORITY = 2000;
+  var IL_LIST_PRIORITY = 3000;
   var SCOPE_PROP_NAME = '$$ilListScope';
 
   angular.module('incrementalList', [])
@@ -19,15 +20,20 @@
       .directive('ilNewItem', ilNewItemDirective)
       .directive('ilIncrementOn', ilIncrementOnDirective)
       .directive('ilDecrementOn', ilDecrementOnDirective)
-      .directive('ilListModel', ilListModelDirective);
+      .directive('ilListModel', ilListModelDirective)
+      .directive('ilMinLength', ilMinLengthDirective)
+      .directive('ilMaxLength', ilMaxLengthDirective);
 
   //////////
 
   function ilListDirective() {
     return {
       restrict: 'A',
-      priority: PRIORITY,
-      controller: ilListController
+      priority: IL_LIST_PRIORITY,
+      controller: ilListController,
+      link: function(scope, element, attrs, ctrl) {
+        ctrl.postInitialize();
+      }
     };
   }
 
@@ -42,16 +48,7 @@
             throw new Error('scope.$index is not a number. Got: ' + index);
           }
 
-          var item = ctrl.list[index];
-          Object.defineProperty(item, SCOPE_PROP_NAME, {
-            configurable: true,
-            enumerable: false,
-            value: scope
-          });
-
-          scope.$on('$destroy', function() {
-            delete item[SCOPE_PROP_NAME];
-          });
+          ctrl.scopeCreatedAt(index, scope);
         }
       }
     };
@@ -90,7 +87,7 @@
     return {
       restrict: 'A',
       require: 'ilList',
-      priority: PRIORITY,
+      priority: MAIN_PRIORITY,
       link: function(scope, element, attrs, ctrl) {
         ctrl.createItem = function(lastItemScope) {
           return lastItemScope.$eval(attrs.ilNewItem);
@@ -103,7 +100,7 @@
     return {
       restrict: 'A',
       require: 'ilList',
-      priority: PRIORITY,
+      priority: MAIN_PRIORITY,
       link: function(scope, element, attrs, ctrl) {
         ctrl.mustIncrement = function(lastItemScope, localScope) {
           return lastItemScope.$eval(attrs.ilIncrementOn, localScope);
@@ -116,7 +113,7 @@
     return {
       restrict: 'A',
       require: 'ilList',
-      priority: PRIORITY,
+      priority: MAIN_PRIORITY,
       link: function(scope, element, attrs, ctrl) {
         ctrl.mustDecrement = function(itemScope, localScope) {
           return itemScope.$eval(attrs.ilDecrementOn, localScope);
@@ -129,7 +126,7 @@
     return {
       restrict: 'A',
       require: ['^^ilList', 'ilList'],
-      priority: PRIORITY,
+      priority: MAIN_PRIORITY,
       link: function(scope, element, attrs, ctrl) {
         var parentCtrl = ctrl[0];
         var elementCtrl = ctrl[1];
@@ -144,6 +141,30 @@
     };
   }
 
+  function ilMinLengthDirective() {
+    return {
+      restrict: 'A',
+      require: 'ilList',
+      priority: MAIN_PRIORITY,
+      link: function(scope, element, attrs, ctrl) {
+        var num = parseInt(attrs.ilMinLength);
+        ctrl.minLength = num > 0 ? num : 0;
+      }
+    };
+  }
+
+  function ilMaxLengthDirective() {
+    return {
+      restrict: 'A',
+      require: 'ilList',
+      priority: MAIN_PRIORITY,
+      link: function(scope, element, attrs, ctrl) {
+        var num = parseInt(attrs.ilMaxLength);
+        ctrl.maxLength = num > 0 ? num : 0;
+      }
+    };
+  }
+
   ilListController.$inject = ['$scope', '$attrs'];
 
   function ilListController($scope, $attrs) {
@@ -153,11 +174,25 @@
     vm.createItem = createItem;
     vm.list = $scope.$eval($attrs.ilList);
     vm.listItemChanged = listItemChanged;
+    vm.maxLength = 9007199254740991;
+    vm.minLength = 1;
     vm.mustDecrement = defaultMustDecrement;
     vm.mustIncrement = defaultMustIncrement;
     vm.notifyParentList = angular.noop;
+    vm.postInitialize = postInitialize;
+    vm.scopeCreatedAt = scopeCreatedAt;
+
+    initialize();
 
     //////////
+
+    function initialize() {
+      var list = vm.list;
+
+      if (angular.isUndefined(list) || list === null) {
+        throw Error('ilList is ' + list + ': ' + $attrs.ilList);
+      }
+    }
 
     function listItemChanged(index, localScope) {
       if (typeof index !== 'number') {
@@ -167,9 +202,9 @@
       var length = vm.list.length;
       var scope = getScope(index);
 
-      if (index === length - 1) {
+      if (index === length - 1 && length < vm.maxLength) {
         lastItemChanged(scope, localScope);
-      } else if (index === length - 2) {
+      } else if (index === length - 2 && length > vm.minLength) {
         checkDecrementConditions(scope, localScope);
       }
 
@@ -213,10 +248,12 @@
     }
 
     function removeEmptyItems(scope, localScope) {
-      var from, to, auxScope = scope;
+      var minFrom = vm.minLength - 1;
+      var auxScope = scope;
+      var from, to;
       from = to = vm.list.length - 2;
 
-      for (; from >= 0; --from, auxScope = prevScope(auxScope)) {
+      for (; from >= minFrom; --from, auxScope = prevScope(auxScope)) {
         if (!vm.mustDecrement(auxScope, localScope)) {
           break;
         }
@@ -249,5 +286,50 @@
     function createItem() {
       return {};
     }
+
+    function postInitialize() {
+      var length = vm.list.length;
+
+      var scope = getScope(length - 1) || $scope;
+
+      if (length < vm.minLength) {
+        var itemPusher = new ItemPusher(vm.minLength - length, vm, scopeCreatedAt);
+        vm.scopeCreatedAt = itemPusher.scopeCreatedAt.bind(itemPusher);
+        itemPusher.pushItem(scope);
+      } else if (length > vm.maxLength) {
+        vm.list.splice(vm.maxLength, length - vm.maxLength);
+      }
+    }
+
+    function scopeCreatedAt(index, scope) {
+      var item = vm.list[index];
+      Object.defineProperty(item, SCOPE_PROP_NAME, {
+        configurable: true,
+        enumerable: false,
+        value: scope
+      });
+
+      scope.$on('$destroy', function() {
+        delete item[SCOPE_PROP_NAME];
+      });
+    }
   }
+
+  function ItemPusher(times, vm, scopeCreatedAt) {
+    this._countdown = times;
+    this._vm = vm;
+    this._scopeCreatedAt = scopeCreatedAt;
+  }
+
+  ItemPusher.prototype.pushItem = function(scope) {
+    this._vm.list.push(this._vm.createItem(scope));
+    if (--this._countdown <= 0) {
+      this._vm.scopeCreatedAt = this._scopeCreatedAt;
+    }
+  };
+
+  ItemPusher.prototype.scopeCreatedAt = function(index, scope) {
+    this._scopeCreatedAt(index, scope);
+    this.pushItem(scope);
+  };
 })();

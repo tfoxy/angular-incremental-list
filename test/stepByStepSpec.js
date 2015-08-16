@@ -35,18 +35,18 @@ describe('incrementalList-steps', function() {
     ngModelCtrl.$setViewValue('');
     scope.$digest();
 
-    expect(scope.list).to.have.property('length', 3);
+    expect(scope.list).to.have.length(3);
 
     ngModelCtrl = element.find('li').last().find('input').first().controller('ngModel');
     ngModelCtrl.$setViewValue('1');
     scope.$digest();
 
-    expect(scope.list).to.have.property('length', 3);
+    expect(scope.list).to.have.length(3);
 
     ngModelCtrl = element.find('li').last().find('input').eq(1).controller('ngModel');
     ngModelCtrl.$setViewValue('2');
     scope.$digest();
 
-    expect(scope.list).to.have.property('length', 4);
+    expect(scope.list).to.have.length(4);
   });
 });

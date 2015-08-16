@@ -132,7 +132,7 @@ describe('incrementalList', function() {
       var element = compileAndDigest(t);
       var ngModelCtrl = element.find('input').eq(-2).controller('ngModel');
       ngModelCtrl.$setViewValue('');
-      expect(scope.list).to.have.property('length', 1);
+      expect(scope.list).to.have.length(1);
       expect(scope.list[0]).to.have.property('focus');
     }));
 
@@ -143,7 +143,7 @@ describe('incrementalList', function() {
       var element = compileAndDigest(t);
       var ngModelCtrl = element.find('input').last().controller('ngModel');
       ngModelCtrl.$setViewValue('');
-      expect(scope.list).to.have.property('length', 1);
+      expect(scope.list).to.have.length(1);
       expect(scope.list[0]).to.have.property('focus');
     }));
 
@@ -158,7 +158,7 @@ describe('incrementalList', function() {
       ];
 
       var t = '<ol>' +
-          '<li ng-repeat="item in list" il-list="list">' +
+          '<li ng-repeat="item in list" il-list="list" il-new-item="{sub: []}">' +
           '<input type="number" ng-model="item.n" il-item-model>' +
           '<ol>' +
           '<li ng-repeat="subItem in item.sub" il-list="item.sub" il-list-model>' +
@@ -174,7 +174,107 @@ describe('incrementalList', function() {
 
       ngModelCtrl.$setViewValue(4);
 
-      expect(scope.list).to.have.property('length', 3);
+      expect(scope.list).to.have.length(3);
+    });
+
+    it('pops items from the list if it exceeds the maximum length', function() {
+      scope.list = [
+        {s: '1'},
+        {s: '2'},
+        {s: '3'},
+        {s: '4'},
+        {s: ''}
+      ];
+
+      var t = '<div><input ' +
+          'ng-repeat="item in list" il-list="list" ' +
+          'ng-model="item.s" il-item-model ' +
+          'il-max-length="2"></div>';
+      compileAndDigest(t);
+
+      expect(scope.list).to.have.length(2);
+    });
+
+  });
+
+  describe('ilMinLength directive', function() {
+
+    it('stops the decrease', function() {
+      scope.list = [
+        {s: ''},
+        {s: ''},
+        {s: ''},
+        {s: ''},
+        {s: ''},
+        {s: 'string'}
+      ];
+
+      var t = '<div><input ' +
+          'ng-repeat="item in list" il-list="list" ' +
+          'ng-model="item.s" il-item-model ' +
+          'il-min-length="3"></div>';
+      var element = compileAndDigest(t);
+      var inputs = element.find('input');
+      var lastInput = inputs.last();
+      var ngModelCtrl = lastInput.controller('ngModel');
+
+      ngModelCtrl.$setViewValue('');
+
+      expect(scope.list).to.have.length(3);
+    });
+
+    it('pushes new items to the list if it does not have enough', function() {
+      scope.list = [];
+
+      var t = '<div><input ' +
+          'ng-repeat="item in list" il-list="list" ' +
+          'ng-model="item.s" il-item-model ' +
+          'il-min-length="3"></div>';
+      compileAndDigest(t);
+
+      expect(scope.list).to.have.length(3);
+    });
+
+    it('pushes new items using ilNewItem directive', function() {
+      scope.list = [];
+
+      var t = '<div><input ' +
+          'ng-repeat="item in list" il-list="list" ' +
+          'ng-model="item.s" il-item-model ' +
+          'il-min-length="3" il-new-item="{s: \'n\' + $index}"></div>';
+      compileAndDigest(t);
+
+      expect(scope.list[0]).to.have.property('s', 'n');
+      expect(scope.list[1]).to.have.property('s', 'n0');
+      expect(scope.list[2]).to.have.property('s', 'n1');
+    });
+
+  });
+
+  describe('ilMaxLength directive', function() {
+
+    it('stops the increase', function() {
+      scope.list = [
+        {s: '1'},
+        {s: '2'},
+        {s: '3'},
+        {s: '4'},
+        {s: '5'},
+        {s: ''}
+      ];
+
+      var t = '<div><input ' +
+          'ng-repeat="item in list" il-list="list" ' +
+          'ng-model="item.s" il-item-model ' +
+          'il-max-length="6"></div>';
+      var element = compileAndDigest(t);
+      var inputs = element.find('input');
+      var lastInput = inputs.last();
+      var ngModelCtrl = lastInput.controller('ngModel');
+
+      ngModelCtrl.$setViewValue('6');
+
+      expect(scope.list).to.have.length(6);
     });
 
   });

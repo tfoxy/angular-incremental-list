@@ -40,15 +40,14 @@ describe('In an isolated scope', function() {
         '</div>' +
         '</div>';
     var element = compileAndDigest(t);
-    console.log(element.html());
-    expect(scope.list).to.have.property('length', listLength);
-    expect(element.find('input')).to.have.property('length', listLength);
+    expect(scope.list).to.have.length(listLength);
+    expect(element.find('input')).to.have.length(listLength);
 
     var ngModelCtrl = element.find('input').last().controller('ngModel');
     ngModelCtrl.$setViewValue(13);
     scope.$digest();
-    expect(scope.list).to.have.property('length', listLength + 1);
-    expect(element.find('input')).to.have.property('length', listLength + 1);
+    expect(scope.list).to.have.length(listLength + 1);
+    expect(element.find('input')).to.have.length(listLength + 1);
 
     expect(scope.list[listLength - 1]).to.have.property('n', 13);
   }));

@@ -34,6 +34,8 @@ angular.module('myApp', ['incrementalList', ...])
 
 ## Usage examples
 
+[Live demo](http://jsbin.com/dixefo/embed?html,output)
+
 ```html
 <!-- Basic example -->
 <ul>

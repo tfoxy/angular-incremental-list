@@ -16,7 +16,7 @@ describe('incrementalList-steps', function() {
     };
   }));
 
-  it('deletes and then adds an item when ilIncrementOn is defined', function() {
+  it('deletes and then adds an item when ilIncreaseOn is defined', function() {
     scope.list = [
       {x: 5, y: 3},
       {x: 8, y: 1},
@@ -25,7 +25,7 @@ describe('incrementalList-steps', function() {
       {x: 1}
     ];
     var t = '<ol><li ng-repeat="item in list" il-list="list"' +
-            ' il-increment-on="item.x && item.y">' +
+            ' il-increase-on="item.x && item.y">' +
             '<input type="number" ng-model="item.x" name="x" il-item-model>' +
             '<input type="number" ng-model="item.y" name="y" il-item-model>' +
             '<input type="text" ng-model="item.name" name="name" il-item-model>' +

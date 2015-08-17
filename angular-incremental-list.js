@@ -1,5 +1,5 @@
 /*!
- * angular-incremental-list v0.1.1
+ * angular-incremental-list v0.2.0
  * https://github.com/tfoxy/angular-incremental-list
  *
  * Copyright 2015 Tomás Fox
@@ -18,6 +18,8 @@
       .directive('ilList', ilListScopeDirective)
       .directive('ilItemModel', ilItemModelDirective)
       .directive('ilNewItem', ilNewItemDirective)
+      .directive('ilIncreaseOn', ilIncreaseOnDirective)
+      .directive('ilDecreaseOn', ilDecreaseOnDirective)
       .directive('ilIncrementOn', ilIncrementOnDirective)
       .directive('ilDecrementOn', ilDecrementOnDirective)
       .directive('ilListModel', ilListModelDirective)
@@ -96,6 +98,22 @@
     };
   }
 
+  function ilIncreaseOnDirective() {
+    return {
+      restrict: 'A',
+      require: 'ilList',
+      priority: MAIN_PRIORITY,
+      link: function(scope, element, attrs, ctrl) {
+        ctrl.mustIncrement = function(lastItemScope, localScope) {
+          return lastItemScope.$eval(attrs.ilIncreaseOn, localScope);
+        };
+      }
+    };
+  }
+
+  /**
+   * @deprecated since version 0.2.0
+   */
   function ilIncrementOnDirective() {
     return {
       restrict: 'A',
@@ -109,6 +127,22 @@
     };
   }
 
+  function ilDecreaseOnDirective() {
+    return {
+      restrict: 'A',
+      require: 'ilList',
+      priority: MAIN_PRIORITY,
+      link: function(scope, element, attrs, ctrl) {
+        ctrl.mustDecrement = function(itemScope, localScope) {
+          return itemScope.$eval(attrs.ilDecreaseOn, localScope);
+        };
+      }
+    };
+  }
+
+  /**
+   * @deprecated since version 0.2.0
+   */
   function ilDecrementOnDirective() {
     return {
       restrict: 'A',

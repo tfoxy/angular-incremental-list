@@ -42,10 +42,10 @@ angular.module('myApp', ['incrementalList', ...])
   </li>
 </ul>
 <!-- -->
-<!-- ilIncrementOn example -->
+<!-- ilIncreaseOn example -->
 <!-- First and last name are required, but age is optional -->
 <ul>
-  <li ng-repeat="person in list" il-list="list" il-increment-on="person.firstName && person.lastName">
+  <li ng-repeat="person in list" il-list="list" il-increase-on="person.firstName && person.lastName">
     <input type="text" ng-model="person.firstName" il-item-model required>
     <input type="text" ng-model="person.lastName" il-item-model required>
     <input type="number" ng-model="person.age" il-item-model>
@@ -61,13 +61,13 @@ angular.module('myApp', ['incrementalList', ...])
     Used in conjunction with `ngRepeat`.
     All the other directives require this one.
   - `ilItemModel`: Notify of changes on the list. Requires `ngModel` directive.
-  - `ilNewItem`: The item that is pushed to the list when it is incremented.
+  - `ilNewItem`: The item that is pushed to the list when it is increased.
     It is evaluated with the scope of the last item.
     Default: `{}`.
-  - `ilIncrementOn`: The conditions that must be met to increment the list.
+  - `ilIncreaseOn`: The conditions that must be met to increase the list.
     It is evaluated with the scope of the last item.
     Default: the changed input must be truthy or 0.
-  - `ilDecrementOn`: The conditions that must be met to decrement the list.
+  - `ilDecreaseOn`: The conditions that must be met to decrease the list.
     It is evaluated with the scope of the last and the second to last item.
     Default: all properties of the item must be `undefined`, `null` or `''`,
     or if the property is an array, its length must not be greater than 1.
@@ -76,10 +76,10 @@ angular.module('myApp', ['incrementalList', ...])
   - `ilMinLength`: The minimum length that the list must have.
     If the list length is less than `ilMinLength` when the directive is processed,
     new items are pushed to the list (using `ilNewItem`).
-    When decrementing the list, it will stop at this value.
+    When decreasing the list, it will stop at this value.
     Default: `1`.
   - `ilMaxLength`: The maximum length that the list can have.
     If the list length is greater than `ilMaxLength` when the directive is processed,
     the items after its value are removed.
-    When incrementing the list, it will stop at this value.
+    When increasing the list, it will stop at this value.
     Default: `9007199254740991 (Number.MAX_SAFE_INTEGER)`.

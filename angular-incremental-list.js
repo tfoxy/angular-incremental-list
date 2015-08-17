@@ -268,8 +268,7 @@
       for (var key in item) {
         if (Object.prototype.hasOwnProperty.call(item, key) && key.slice(0, 2) !== '$$') {
           var v = item[key];
-          if (angular.isDefined(v) && v !== null && v !== '' &&
-              (!Array.isArray(v) || v.length > 1)) {
+          if ((v && (!Array.isArray(v) || v.length > 1)) || v === 0) {
             return false;
           }
         }

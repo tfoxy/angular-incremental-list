@@ -61,15 +61,25 @@ angular.module('myApp', ['incrementalList', ...])
     Used in conjunction with `ngRepeat`.
     All the other directives require this one.
   - `ilItemModel`: Notify of changes on the list. Requires `ngModel` directive.
-  - `ilNewItem`: Indicates the item that is pushed to the list when it is incremented.
+  - `ilNewItem`: The item that is pushed to the list when it is incremented.
     It is evaluated with the scope of the last item.
     Default: `{}`.
   - `ilIncrementOn`: The conditions that must be met to increment the list.
     It is evaluated with the scope of the last item.
-    Default: at least one property of the item must no be equal to `undefined`, `null` or `''`,
-    or if is in array, its length must be greater than 1.
+    Default: the changed input must be truthy or 0.
   - `ilDecrementOn`: The conditions that must be met to decrement the list.
     It is evaluated with the scope of the last and the second to last item.
-    Default: the inverse of the default `ilIncrementOn`.
+    Default: all properties of the item must be `undefined`, `null` or `''`,
+    or if the property is an array, its length must not be greater than 1.
   - `ilListModel`: This is used when there are nested `ilList`.
     Used in an `ilList` to notify the parent `ilList` that changes were made.
+  - `ilMinLength`: The minimum length that the list must have.
+    If the list length is less than `ilMinLength` when the directive is processed,
+    new items are pushed to the list (using `ilNewItem`).
+    When decrementing the list, it will stop at this value.
+    Default: `1`.
+  - `ilMaxLength`: The maximum length that the list can have.
+    If the list length is greater than `ilMaxLength` when the directive is processed,
+    the items after its value are removed.
+    When incrementing the list, it will stop at this value.
+    Default: `9007199254740991 (Number.MAX_SAFE_INTEGER)`.

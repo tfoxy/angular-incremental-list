@@ -1,6 +1,6 @@
 {
   "name": "angular-incremental-list",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "List that auto-increments and decrements",
   "main": "./angular-incremental-list",
   "scripts": {

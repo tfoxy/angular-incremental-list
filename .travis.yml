@@ -1,9 +1,17 @@
 language: node_js
 node_js:
-  - '0.12'
+- '0.12'
 before_script:
-  - 'export CHROME_BIN=chromium-browser'
-  - 'export DISPLAY=:99.0'
-  - 'sh -e /etc/init.d/xvfb start'
-  - 'npm install -g bower'
-  - 'bower install'
+- export CHROME_BIN=chromium-browser
+- export DISPLAY=:99.0
+- sh -e /etc/init.d/xvfb start
+- npm install -g bower
+- bower install
+deploy:
+  provider: npm
+  email: tomas.c.fox@gmail.com
+  api_key:
+    secure: ijukfv8j0iEzs1H8zp7CEy0waqj98ioxeJaeFJnwLNJAWxPJ882AtGXNCrn2x402b396/JNRxSEQjORU3SaZaKiMVfqKqah+T5r9wAyCn/m8QACrDRBVo9ck+iX00ZyAIoWEgRMYpqLAGSlhVS+QLcs/xtgUGjW3OrrUZiABoZbdZtsJIQ89F4grRVXaTwusbdZ0EazWp7BYVWq3m7Fy/4ugOT+8sceI7UhLTGa7sWRvE67NtE781BETvaTePrU/HIyRVDAEf5od2rcdMMs4yXHC2t2LYOM2hSu6H/5qVit5sQEU5XPxP6lRWt51h9Fr82fOpR9mgip/aXHw+8ccZss5nhUm33qT+4d0fKG/IUgmvy7pTI4Tf0xuLshuCryqufjwWHjQe5PkZb35iZ+umkro9vTfGP7B5Ix7VvtLvY/TDURQgyRlqzqjgUML5mSbGjq9awPs7FFe/TMzNC10aCQpjPUvP9V4CALZ+9gUowBw3LwN62lQ5o1dcSbzQauTV+2X7mXKi2rkoXscjbIXvnHLxh9pWMYmPgA+1aQ0qcQu7IA0qF2jod1WqMvsSippEtGGCu5qDiMCdqS21Q4b3KXnTR/kRo0zBg6YmzaFKikIChM9OkUtLAuIQIXFeebjok+Nl1eQ9D/2WKzTr/XOVZmiYj8F3f9zZg5mT6vF3cs=
+  on:
+    tags: true
+    repo: tfoxy/angular-incremental-list

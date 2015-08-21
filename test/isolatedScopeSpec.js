@@ -10,10 +10,9 @@ describe('In an isolated scope', function() {
         return {
           restrict: 'A',
           scope: {
-            $index: '=index',
-            item: '='
+            pScope: '='
           },
-          template: '<input type="number" ng-model="item.n" il-item-model>'
+          template: '<input type="number" ng-model="pScope.item.n" il-item-model="pScope">'
         };
       });
 
@@ -30,13 +29,13 @@ describe('In an isolated scope', function() {
     };
   }));
 
-  it('il-item-model directive works', inject(function() {
+  it('il-item-model directive works', function() {
     scope.list = [{n: 7}, {n: 2}, {n: null}];
     var listLength = scope.list.length;
     var t =
         '<div>' +
         '<div ng-repeat="item in list" il-list="list">' +
-        '<div custom-directive index="$index" item="item"></div>' +
+        '<div custom-directive p-scope="this"></div>' +
         '</div>' +
         '</div>';
     var element = compileAndDigest(t);
@@ -50,5 +49,5 @@ describe('In an isolated scope', function() {
     expect(element.find('input')).to.have.length(listLength + 1);
 
     expect(scope.list[listLength - 1]).to.have.property('n', 13);
-  }));
+  });
 });

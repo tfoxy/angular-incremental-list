@@ -1,6 +1,8 @@
 {
   "extends": "../.jshintrc",
 
+  "multistr": true,
+
   "globals": {
     "inject": true,
     "expect": true,

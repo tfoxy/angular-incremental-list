@@ -71,17 +71,29 @@ angular.module('myApp', ['incrementalList', ...])
     Default: the changed input must be truthy or 0.
   - `ilDecreaseOn`: The conditions that must be met to decrease the list.
     It is evaluated with the scope of the last and the second to last item.
-    Default: all properties of the item must be `undefined`, `null` or `''`,
-    or if the property is an array, its length must not be greater than 1.
+    Default: all inputs must be empty.
   - `ilListModel`: This is used when there are nested `ilList`.
     Used in an `ilList` to notify the parent `ilList` that changes were made.
   - `ilMinLength`: The minimum length that the list must have.
-    If the list length is less than `ilMinLength` when the directive is processed,
+    If the list length is less than `ilMinLength` when the directive is linked,
     new items are pushed to the list (using `ilNewItem`).
     When decreasing the list, it will stop at this value.
     Default: `1`.
   - `ilMaxLength`: The maximum length that the list can have.
-    If the list length is greater than `ilMaxLength` when the directive is processed,
+    If the list length is greater than `ilMaxLength` when the directive is linked,
     the items after its value are removed.
     When increasing the list, it will stop at this value.
     Default: `9007199254740991 (Number.MAX_SAFE_INTEGER)`.
+    
+The directives `ilIncreaseOn`, `ilDecreaseOn` and `ilNewItem` have a local scope with an `$ilList` object
+ that has the following functions:
+
+  - `emptyModel`: returns true if all input model values are empty
+  - `emptyView`: returns true if all input view values are empty (default for `ilDecreaseOn`).
+  - `fullModel`: returns true if all input model values are not empty
+  - `fullView`: returns true if all input view values are not empty
+  - `modelExists`: returns true if the model value of the modified input exists (default for `ilIncreaseOn`).
+  - `viewExists`: returns true if the view value of the modified input exists
+
+These functions must be called with the scope as the parameter.
+For example: `il-increase-on="$ilList.fullModel(this)"`

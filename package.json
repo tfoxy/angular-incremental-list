@@ -18,7 +18,8 @@
     "angular",
     "list",
     "incremental",
-    "ngRepeat"
+    "ngRepeat",
+    "autosize"
   ],
   "devDependencies": {
     "chai": "^3.2.0",

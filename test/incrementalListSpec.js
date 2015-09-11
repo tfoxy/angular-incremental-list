@@ -339,7 +339,7 @@ describe('incrementalList', function() {
         {}
       ];
       var t = '<span><div ng-repeat="item in list" il-list="list"\
-          il-increase-on="$ilList.fullModel(this)">\
+          il-increase-on="$ilList.fullModel()">\
           <input type="number" ng-model="item.n" il-item-model>\
           <input type="text" ng-model="item.s" il-item-model>\
           </div></span>';

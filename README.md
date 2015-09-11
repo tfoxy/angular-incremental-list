@@ -94,6 +94,3 @@ The directives `ilIncreaseOn`, `ilDecreaseOn` and `ilNewItem` have a local scope
   - `fullView`: returns true if all input view values are not empty
   - `modelExists`: returns true if the model value of the modified input exists (default for `ilIncreaseOn`).
   - `viewExists`: returns true if the view value of the modified input exists
-
-These functions must be called with the scope as the parameter.
-For example: `il-increase-on="$ilList.fullModel(this)"`

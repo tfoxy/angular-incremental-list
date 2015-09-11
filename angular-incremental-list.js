@@ -1,9 +1,9 @@
 /*!
- * angular-incremental-list v0.3.0
- * https://github.com/tfoxy/angular-incremental-list
- *
- * Copyright 2015 Tomás Fox
- * Released under the MIT license
+ * angular-incremental-list
+ * @see https://github.com/tfoxy/angular-incremental-list
+ * @version 0.3.0
+ * @author Tomás Fox <tomas.c.fox@gmail.com>
+ * @license MIT
  */
 
 (function() {

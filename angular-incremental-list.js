@@ -1,7 +1,7 @@
 /*!
  * angular-incremental-list
  * @see https://github.com/tfoxy/angular-incremental-list
- * @version 0.4.2
+ * @version 0.4.3
  * @author Tomás Fox <tomas.c.fox@gmail.com>
  * @license MIT
  */

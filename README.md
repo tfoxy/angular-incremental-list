@@ -86,6 +86,8 @@ angular.module('myApp', ['incrementalList', ...])
     Default: `9007199254740991 (Number.MAX_SAFE_INTEGER)`.
   - `ilEnableHasFocus`: Enables the `$ilList.hasFocus` function (see below).
     This will add a focus and blur listener to every input that has `ilItemModel`.
+  - `ilDecreaseMiddle`: Allows items in the middle to be removed.
+    It is recommended to use it with `$ilList.hasFocus` so that focus is not stolen.
     
 The directives `ilIncreaseOn`, `ilDecreaseOn` and `ilNewItem` have a local scope with an `$ilList` object
  that has the following functions:

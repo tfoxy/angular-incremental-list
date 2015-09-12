@@ -11,11 +11,11 @@
 </head>
 <body ng-app="app">
   <input id="another-input" title="another-input">
-  <ul ng-init="list = []">
-    <li ng-repeat="item in list"
-        il-list="list"
+  <ul ng-init="decreaseMiddlelist = []">
+    <li ng-repeat="item in decreaseMiddlelist"
+        il-list="decreaseMiddlelist"
         il-enable-has-focus
-        il-increase-on="$ilList.hasFocus()"
+        il-decrease-middle
         il-decrease-on="!$ilList.hasFocus() && $ilList.emptyView()">
       <input ng-model="item.value" il-item-model title="i{{$index}}">
     </li>

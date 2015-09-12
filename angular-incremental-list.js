@@ -23,7 +23,8 @@
       .directive('ilListModel', ilListModelDirective)
       .directive('ilMinLength', ilMinLengthDirective)
       .directive('ilMaxLength', ilMaxLengthDirective)
-      .directive('ilEnableHasFocus', ilEnableHasFocusDirective);
+      .directive('ilEnableHasFocus', ilEnableHasFocusDirective)
+      .directive('ilDecreaseMiddle', ilDecreaseMiddleDirective);
 
   ////////////////
 
@@ -171,29 +172,41 @@
       restrict: 'A',
       require: 'ilList',
       priority: MAIN_PRIORITY,
-      link: function postLink(scope, element, attrs, ctrl) {
-        ctrl.listenToEvents = function listenForHasFocus(inputScope, inputElement, listener) {
-          inputElement.on('focus', function inputFocus() {
-            ctrl.cancelBlurTimeout();
-            ctrl.focusIndex = inputScope.$index;
-            if (ctrl.blurListener) {
-              inputScope.$apply(ctrl.blurListener);
-              ctrl.blurListener = null;
-            }
-            inputScope.$apply(listener);
-            ctrl.focusIndex = -1;
-          });
+      link: postLink
+    };
 
-          inputElement.on('blur', function inputBlur() {
-            ctrl.blurListener = listener;
-            ctrl.blurTimeout = $timeout(function blurTimeout() {
-              ctrl.blurTimeout = null;
-              ctrl.focusIndex = -1;
-              ctrl.blurListener = null;
-              listener();
-            });
+    function postLink(scope, element, attrs, ctrl) {
+      ctrl.listenToEvents = function listenForHasFocus(inputScope, inputElement, listener) {
+        inputElement.on('focus', function inputFocus() {
+          ctrl.cancelBlurTimeout();
+          ctrl.focusIndex = inputScope.$index;
+          if (ctrl.blurListener) {
+            inputScope.$apply(ctrl.blurListener);
+            ctrl.blurListener = null;
+          }
+          inputScope.$apply(listener);
+        });
+
+        inputElement.on('blur', function inputBlur() {
+          ctrl.blurListener = listener;
+          ctrl.blurTimeout = $timeout(function blurTimeout() {
+            ctrl.blurTimeout = null;
+            ctrl.focusIndex = -1;
+            ctrl.blurListener = null;
+            listener();
           });
-        };
+        });
+      };
+    }
+  }
+
+  function ilDecreaseMiddleDirective() {
+    return {
+      restrict: 'A',
+      require: 'ilList',
+      priority: MAIN_PRIORITY,
+      link: function postLink(scope, element, attrs, ctrl) {
+        ctrl.enableMiddleDecrease();
       }
     };
   }
@@ -205,21 +218,25 @@
     /* jshint validthis: true */
     var vm = this;
 
+    var $ilList = {
+      emptyModel: listInputsHelper(false, true),
+      emptyView: listInputsHelper(false, false),
+      fullModel: listInputsHelper(true, true),
+      fullView: listInputsHelper(true, false),
+      hasFocus: hasFocus,
+      modelExists: modelExists,
+      viewExists: viewExists
+    };
+
     var localScope = {
-      $ilList: {
-        emptyModel: listInputsHelper(false, true),
-        emptyView: listInputsHelper(false, false),
-        fullModel: listInputsHelper(true, true),
-        fullView: listInputsHelper(true, false),
-        hasFocus: hasFocus,
-        modelExists: modelExists,
-        viewExists: viewExists
-      }
+      $ilList: $ilList
     };
 
     vm.blurTimeout = null;
     vm.cancelBlurTimeout = cancelBlurTimeout;
+    vm.checkDecreaseConditions = angular.noop;
     vm.createItem = createItem;
+    vm.enableMiddleDecrease = enableMiddleDecrease;
     vm.evalWithCurrentScope = evalWithCurrentScope;
     vm.focusIndex = -1;
     vm.list = $scope.$eval($attrs.ilList);
@@ -228,7 +245,7 @@
     vm.localScope = localScope;
     vm.maxLength = 9007199254740991;
     vm.minLength = 1;
-    vm.mustDecrement = localScope.$ilList.emptyView;
+    vm.mustDecrement = $ilList.emptyView;
     vm.mustIncrement = modelExists;
     vm.notifyParentList = angular.noop;
     vm.postInitialize = postInitialize;
@@ -263,19 +280,30 @@
       var length = vm.list.length;
       var scope = getScope(index);
 
-      vm.localScope.$ilList.currentScope = scope;
-      vm.localScope.$ilList.changed = changed;
+      $ilList.currentScope = scope;
+      $ilList.changed = changed;
 
       if (index === length - 1 && length < vm.maxLength) {
         lastItemChanged();
       } else if (index === length - 2 && length > vm.minLength) {
-        checkDecrementConditions();
+        checkLastItemsDecreaseConditions();
+      } else if (length > vm.minLength) {
+        vm.checkDecreaseConditions();
       }
 
-      delete vm.localScope.$ilList.currentScope;
-      delete vm.localScope.$ilList.changed;
+      delete $ilList.currentScope;
+      delete $ilList.changed;
 
       vm.notifyParentList(scope, changed);
+    }
+
+
+    function enableMiddleDecrease() {
+      vm.checkDecreaseConditions = checkDecreaseConditions;
+
+      function checkDecreaseConditions() {
+        removeEmptyItems($ilList.currentScope);
+      }
     }
 
 
@@ -300,14 +328,14 @@
     function lastItemChanged() {
       if (vm.mustIncrement()) {
         vm.list.push(vm.createItem());
-      } else if (!vm.localScope.$ilList.currentScope.$first) {
-        checkDecrementConditions();
+      } else if (!$ilList.currentScope.$first) {
+        checkLastItemsDecreaseConditions();
       }
     }
 
 
-    function checkDecrementConditions() {
-      var scope = vm.localScope.$ilList.currentScope;
+    function checkLastItemsDecreaseConditions() {
+      var scope = $ilList.currentScope;
       var otherScope = scope.$last ? prevScope(scope) : nextScope(scope);
 
       if (vm.mustDecrement() &&
@@ -322,7 +350,7 @@
 
 
     function mustDecrementWithScope(scope) {
-      vm.localScope.$ilList.currentScope = scope;
+      $ilList.currentScope = scope;
       return vm.mustDecrement();
     }
 
@@ -344,7 +372,7 @@
 
 
     function evalWithCurrentScope(expression) {
-      return localScope.$ilList.currentScope.$eval(expression, localScope);
+      return $ilList.currentScope.$eval(expression, localScope);
     }
 
 
@@ -354,7 +382,7 @@
 
 
     function hasFocus() {
-      return vm.focusIndex === localScope.$ilList.currentScope.$index;
+      return vm.focusIndex === $ilList.currentScope.$index;
     }
 
 
@@ -397,7 +425,7 @@
       return listInputsHelperFn;
 
       function listInputsHelperFn(paramScope) {
-        var scope = paramScope || vm.localScope.$ilList.currentScope;
+        var scope = paramScope || $ilList.currentScope;
         var isEmpty = scope.$$ilListModels.every(function(ngModelCtrl) {
           return onFull ^ !valueExists(ngModelCtrl[valueProp]);
         });
@@ -415,7 +443,7 @@
 
 
     function modelExists() {
-      var value = vm.localScope.$ilList.changed.$modelValue;
+      var value = $ilList.changed.$modelValue;
       return valueExists(value);
     }
 
@@ -426,7 +454,7 @@
 
 
     function viewExists() {
-      var value = vm.localScope.$ilList.changed.$viewValue;
+      var value = $ilList.changed.$viewValue;
       return valueExists(value);
     }
   }

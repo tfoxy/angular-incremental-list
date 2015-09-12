@@ -1,24 +1,23 @@
-describe('spec', function() {
+describe('il-enable-has-focus spec:', function() {
   'use strict';
 
   var Page = require('./po.js');
-  var page;
+  var page = new Page();
 
-  beforeEach(function() {
-    browser.get('index.html');
-    page = new Page();
-  });
+  describe('list', function() {
 
-  describe('il-enable-has-focus', function() {
+    beforeEach(function() {
+      browser.get('enable-has-focus.html');
+    });
 
-    it('grows the list when focused on the last item', function() {
+    it('grows when focused on the last item', function() {
       page.getInput(0).sendKeys('123');
       page.getInput(1).sendKeys('2');
       page.getInput(2).click();
       expect(page.listInputs.count()).toBe(4);
     });
 
-    it('grows the list multiple times when focused on the last item', function() {
+    it('grows multiple times when focused on the last item', function() {
       page.getInput(0).sendKeys('123');
       page.getInput(1).sendKeys('2');
       page.getInput(2).click();

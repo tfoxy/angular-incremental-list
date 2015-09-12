@@ -1,7 +1,7 @@
 /*!
  * angular-incremental-list
  * @see https://github.com/tfoxy/angular-incremental-list
- * @version 0.4.1
+ * @version 0.4.2
  * @author Tomás Fox <tomas.c.fox@gmail.com>
  * @license MIT
  */
@@ -183,8 +183,10 @@
           if (ctrl.blurListener) {
             inputScope.$apply(ctrl.blurListener);
             ctrl.blurListener = null;
+            ctrl.focusIndex = inputScope.$index;
           }
           inputScope.$apply(listener);
+          ctrl.focusIndex = inputScope.$index;
         });
 
         inputElement.on('blur', function inputBlur() {
@@ -261,6 +263,8 @@
       if (angular.isUndefined(list) || list === null) {
         throw Error('ilList is ' + list + ': ' + $attrs.ilList);
       }
+
+      $scope.$on('$destroy', cancelBlurTimeout);
     }
 
 
@@ -359,8 +363,7 @@
       var minFrom = vm.minLength - 1;
       var auxScope = scope;
       var from, to;
-      from = to = endIndex || (vm.list.length - 2);
-
+      from = to = endIndex >= 0 ? endIndex : vm.list.length - 2;
       for (; from >= minFrom; --from, auxScope = prevScope(auxScope)) {
         if (!mustDecrementWithScope(auxScope)) {
           break;

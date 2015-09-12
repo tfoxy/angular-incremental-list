@@ -1,7 +1,7 @@
 /*!
  * angular-incremental-list
  * @see https://github.com/tfoxy/angular-incremental-list
- * @version 0.4.0
+ * @version 0.4.1
  * @author Tomás Fox <tomas.c.fox@gmail.com>
  * @license MIT
  */
@@ -302,7 +302,7 @@
       vm.checkDecreaseConditions = checkDecreaseConditions;
 
       function checkDecreaseConditions() {
-        removeEmptyItems($ilList.currentScope);
+        removeEmptyItems($ilList.currentScope, $ilList.currentScope.$index);
       }
     }
 
@@ -355,11 +355,11 @@
     }
 
 
-    function removeEmptyItems(scope) {
+    function removeEmptyItems(scope, endIndex) {
       var minFrom = vm.minLength - 1;
       var auxScope = scope;
       var from, to;
-      from = to = vm.list.length - 2;
+      from = to = endIndex || (vm.list.length - 2);
 
       for (; from >= minFrom; --from, auxScope = prevScope(auxScope)) {
         if (!mustDecrementWithScope(auxScope)) {

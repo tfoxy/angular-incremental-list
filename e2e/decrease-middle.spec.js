@@ -23,6 +23,8 @@ describe('il-decrease-middle spec:', function() {
       expect(page.listInputs.count()).toBe(8);
       page.anotherInput.click();
       expect(page.listInputs.count()).toBe(7);
+      expect(page.getInput(5).getAttribute('value')).toBe('6');
+      expect(page.getInput(3).getAttribute('value')).toBe('4');
     });
 
     it('does not removes an item in the middle if condition is not met', function() {

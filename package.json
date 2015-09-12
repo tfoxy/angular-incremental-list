@@ -4,8 +4,9 @@
   "description": "List that auto-increments and decrements",
   "main": "./angular-incremental-list",
   "scripts": {
-    "test": "karma start --single-run && protractor",
-    "min": "uglifyjs angular-incremental-list.js --comments '/^!/' --compress --mangle -o angular-incremental-list.min.js"
+    "test": "jshint . --exclude-path=.gitignore --exclude='**/*.min.js' && jscs . && karma start --single-run && protractor",
+    "min": "uglifyjs angular-incremental-list.js --comments '/^!/' --compress --mangle -o angular-incremental-list.min.js",
+    "jshint": "jshint . --exclude-path=.gitignore --exclude='**/*.min.js'"
   },
   "repository": {
     "type": "git",

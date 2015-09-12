@@ -3,5 +3,6 @@
   "disallowMultipleLineBreaks": null,
   "disallowMultipleLineStrings": null,
   "disallowMultipleVarDecl": null,
-  "maximumLineLength": 100
+  "maximumLineLength": 100,
+  "excludeFiles": ["node_modules", "bower_components", "**/*.min.js"]
 }

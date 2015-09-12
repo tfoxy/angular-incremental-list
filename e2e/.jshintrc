@@ -1,0 +1,13 @@
+{
+    "extends": "../.jshintrc",
+
+    "jasmine": true,
+    "node": true,
+    "globals": {
+        "browser": true,
+        "element": true,
+        "by": true,
+        "$": true,
+        "protractor": true
+    }
+}

@@ -4,7 +4,7 @@
   "description": "List that auto-increments and decrements",
   "main": "./angular-incremental-list",
   "scripts": {
-    "test": "karma start karma.conf.js --single-run",
+    "test": "karma start --single-run && protractor",
     "min": "uglifyjs angular-incremental-list.js --comments '/^!/' --compress --mangle -o angular-incremental-list.min.js"
   },
   "repository": {
@@ -23,6 +23,7 @@
   ],
   "devDependencies": {
     "chai": "^3.2.0",
+    "finalhandler": "^0.4.0",
     "karma": "0.12.x",
     "karma-chai": "0.1.x",
     "karma-chrome-launcher": "0.2.x",
@@ -32,6 +33,8 @@
     "mocha": "^2.2.5",
     "phantomjs": "^1.9.18",
     "phantomjs-polyfill": "0.0.1",
+    "protractor": "^2.2.0",
+    "serve-static": "^1.10.0",
     "sinon": "^1.15.4"
   },
   "author": "Tomás Fox <tomas.c.fox@gmail.com>",

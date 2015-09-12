@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+  <meta charset="UTF-8">
+  <title>angular-incremental-list</title>
+  <script src="../bower_components/angular/angular.js"></script>
+  <script src="../angular-incremental-list.js"></script>
+  <script>
+    angular.module('app', ['incrementalList']);
+  </script>
+</head>
+<body ng-app="app">
+  <input id="another-input" title="another-input">
+  <ul ng-init="list = []">
+    <li ng-repeat="item in list"
+        il-list="list"
+        il-enable-has-focus
+        il-increase-on="$ilList.hasFocus()"
+        il-decrease-on="!$ilList.hasFocus() && $ilList.emptyView()">
+      <input ng-model="item.value" il-item-model title="i{{$index}}">
+    </li>
+  </ul>
+</body>
+</html>

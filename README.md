@@ -84,13 +84,16 @@ angular.module('myApp', ['incrementalList', ...])
     the items after its value are removed.
     When increasing the list, it will stop at this value.
     Default: `9007199254740991 (Number.MAX_SAFE_INTEGER)`.
+  - `ilEnableHasFocus`: Enables the `$ilList.hasFocus` function (see below).
+    This will add a focus and blur listener to every input that has `ilItemModel`.
     
 The directives `ilIncreaseOn`, `ilDecreaseOn` and `ilNewItem` have a local scope with an `$ilList` object
  that has the following functions:
 
   - `emptyModel`: returns true if all input model values are empty
-  - `emptyView`: returns true if all input view values are empty (default for `ilDecreaseOn`).
+  - `emptyView`: returns true if all input view values are empty (default for `ilDecreaseOn`)
   - `fullModel`: returns true if all input model values are not empty
   - `fullView`: returns true if all input view values are not empty
-  - `modelExists`: returns true if the model value of the modified input exists (default for `ilIncreaseOn`).
+  - `modelExists`: returns true if the model value of the modified input exists (default for `ilIncreaseOn`)
   - `viewExists`: returns true if the view value of the modified input exists
+  - `hasFocus`: returns true if an input of the item has focus (enabled with `ilEnableHasFocus`)

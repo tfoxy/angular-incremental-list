@@ -22,7 +22,8 @@
       .directive('ilDecreaseOn', ilDecreaseOnDirective)
       .directive('ilListModel', ilListModelDirective)
       .directive('ilMinLength', ilMinLengthDirective)
-      .directive('ilMaxLength', ilMaxLengthDirective);
+      .directive('ilMaxLength', ilMaxLengthDirective)
+      .directive('ilEnableHasFocus', ilEnableHasFocusDirective);
 
   ////////////////
 
@@ -66,13 +67,15 @@
             scope.$eval(attrs.ilItemModel) :
             scope;
 
-        var listener = function() {
+        var listener = function viewChangeListener() {
           ilListCtrl.listItemChanged(selectedScope.$index, ngModelCtrl);
         };
 
         ngModelCtrl.$viewChangeListeners.push(listener);
 
         pushToScopeArray(selectedScope.$$ilListModels, ngModelCtrl, scope);
+
+        ilListCtrl.listenToEvents(selectedScope, element, listener);
       }
     };
   }
@@ -96,7 +99,7 @@
       require: 'ilList',
       priority: MAIN_PRIORITY,
       link: function postLink(scope, element, attrs, ctrl) {
-        ctrl.mustIncrement = function ilIncreseOnEval() {
+        ctrl.mustIncrement = function ilIncreaseOnEval() {
           return ctrl.evalWithCurrentScope(attrs.ilIncreaseOn);
         };
       }
@@ -161,10 +164,44 @@
     };
   }
 
+  ilEnableHasFocusDirective.$inject = ['$timeout'];
 
-  ilListController.$inject = ['$scope', '$attrs'];
+  function ilEnableHasFocusDirective($timeout) {
+    return {
+      restrict: 'A',
+      require: 'ilList',
+      priority: MAIN_PRIORITY,
+      link: function postLink(scope, element, attrs, ctrl) {
+        ctrl.listenToEvents = function listenForHasFocus(inputScope, inputElement, listener) {
+          inputElement.on('focus', function inputFocus() {
+            ctrl.cancelBlurTimeout();
+            ctrl.focusIndex = inputScope.$index;
+            if (ctrl.blurListener) {
+              inputScope.$apply(ctrl.blurListener);
+              ctrl.blurListener = null;
+            }
+            inputScope.$apply(listener);
+            ctrl.focusIndex = -1;
+          });
 
-  function ilListController($scope, $attrs) {
+          inputElement.on('blur', function inputBlur() {
+            ctrl.blurListener = listener;
+            ctrl.blurTimeout = $timeout(function blurTimeout() {
+              ctrl.blurTimeout = null;
+              ctrl.focusIndex = -1;
+              ctrl.blurListener = null;
+              listener();
+            });
+          });
+        };
+      }
+    };
+  }
+
+
+  ilListController.$inject = ['$scope', '$attrs', '$timeout'];
+
+  function ilListController($scope, $attrs, $timeout) {
     /* jshint validthis: true */
     var vm = this;
 
@@ -174,14 +211,19 @@
         emptyView: listInputsHelper(false, false),
         fullModel: listInputsHelper(true, true),
         fullView: listInputsHelper(true, false),
+        hasFocus: hasFocus,
         modelExists: modelExists,
         viewExists: viewExists
       }
     };
 
+    vm.blurTimeout = null;
+    vm.cancelBlurTimeout = cancelBlurTimeout;
     vm.createItem = createItem;
     vm.evalWithCurrentScope = evalWithCurrentScope;
+    vm.focusIndex = -1;
     vm.list = $scope.$eval($attrs.ilList);
+    vm.listenToEvents = angular.noop;
     vm.listItemChanged = listItemChanged;
     vm.localScope = localScope;
     vm.maxLength = 9007199254740991;
@@ -201,6 +243,14 @@
 
       if (angular.isUndefined(list) || list === null) {
         throw Error('ilList is ' + list + ': ' + $attrs.ilList);
+      }
+    }
+
+
+    function cancelBlurTimeout() {
+      if (vm.blurTimeout) {
+        $timeout.cancel(vm.blurTimeout);
+        vm.blurTimeout = null;
       }
     }
 
@@ -294,13 +344,17 @@
 
 
     function evalWithCurrentScope(expression) {
-      var localScope = vm.localScope;
       return localScope.$ilList.currentScope.$eval(expression, localScope);
     }
 
 
     function createItem() {
       return {};
+    }
+
+
+    function hasFocus() {
+      return vm.focusIndex === localScope.$ilList.currentScope.$index;
     }
 
 

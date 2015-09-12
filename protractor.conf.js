@@ -12,7 +12,11 @@
     baseUrl: 'http://localhost:' + PORT + '/e2e/',
 
     capabilities: {
-      browserName: 'chrome'
+      browserName: 'chrome',
+      chromeOptions: {
+        // When using travis, --no-sandbox arg is pushed to args
+        args: []
+      }
     },
 
     specs: ['e2e/**/*.js'],

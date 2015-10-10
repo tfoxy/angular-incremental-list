@@ -31,19 +31,19 @@ describe('incrementalList-steps', function() {
             '<input type="text" ng-model="item.name" name="name" il-item-model>' +
             '</li></ol>';
     var element = compileAndDigest(t);
-    var ngModelCtrl = element.find('li').last().find('input').first().controller('ngModel');
+    var ngModelCtrl = element.find('li').eq(-1).find('input').eq(0).controller('ngModel');
     ngModelCtrl.$setViewValue('');
     scope.$digest();
 
     expect(scope.list).to.have.length(3);
 
-    ngModelCtrl = element.find('li').last().find('input').first().controller('ngModel');
+    ngModelCtrl = element.find('li').eq(-1).find('input').eq(0).controller('ngModel');
     ngModelCtrl.$setViewValue('1');
     scope.$digest();
 
     expect(scope.list).to.have.length(3);
 
-    ngModelCtrl = element.find('li').last().find('input').eq(1).controller('ngModel');
+    ngModelCtrl = element.find('li').eq(-1).find('input').eq(1).controller('ngModel');
     ngModelCtrl.$setViewValue('2');
     scope.$digest();
 

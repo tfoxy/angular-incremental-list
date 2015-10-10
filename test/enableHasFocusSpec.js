@@ -32,7 +32,7 @@ describe('ilEnableHasFocus directive', function() {
     var element = compileAndDigest(html);
     var inputs = element.find('input');
     expect(inputs).to.have.length(1);
-    inputs.first().triggerHandler('focus');
+    inputs.eq(0).triggerHandler('focus');
     inputs = element.find('input');
     expect(inputs).to.have.length(2);
   });
@@ -43,7 +43,7 @@ describe('ilEnableHasFocus directive', function() {
     var element = compileAndDigest(html);
     var inputs = element.find('input');
     expect(inputs).to.have.length(initialLength);
-    inputs.last().triggerHandler('focus');
+    inputs.eq(-1).triggerHandler('focus');
     inputs = element.find('input');
     expect(inputs).to.have.length(initialLength + 1);
   });

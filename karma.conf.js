@@ -19,7 +19,6 @@ module.exports = function(config) {
       'bower_components/angular/angular.js',
       'bower_components/angular-mocks/angular-mocks.js',
       'angular-incremental-list.js',
-      'test/elementPolyfill.js',
       'test/*Spec.js'
     ],
 

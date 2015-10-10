@@ -100,7 +100,7 @@ describe('incrementalList', function() {
       var listLength = scope.list.length;
       var t = ngModelListHtml;
       var element = compileAndDigest(t);
-      var ngModelCtrl = element.find('input').last().controller('ngModel');
+      var ngModelCtrl = element.find('input').eq(-1).controller('ngModel');
       ngModelCtrl.$setViewValue('9');
       expect(scope.list.length).to.equals(listLength + 1);
     });
@@ -110,7 +110,7 @@ describe('incrementalList', function() {
       var listLength = scope.list.length;
       var t = ngModelListHtml;
       var element = compileAndDigest(t);
-      var ngModelCtrl = element.find('input').last().controller('ngModel');
+      var ngModelCtrl = element.find('input').eq(-1).controller('ngModel');
       ngModelCtrl.$setViewValue('');
       expect(scope.list.length).to.equals(listLength - 1);
     });
@@ -120,7 +120,7 @@ describe('incrementalList', function() {
       var listLength = scope.list.length;
       var t = ngModelListHtml;
       var element = compileAndDigest(t);
-      var ngModelCtrl = element.find('input').last().controller('ngModel');
+      var ngModelCtrl = element.find('input').eq(-1).controller('ngModel');
       ngModelCtrl.$setViewValue('');
       expect(scope.list.length).to.equals(listLength - 2);
     });
@@ -141,7 +141,7 @@ describe('incrementalList', function() {
       scope.list = [{s: ''}, {s: ''}, {s: ''}, {s: '1', focus: null}];
       var t = ngModelListHtml;
       var element = compileAndDigest(t);
-      var ngModelCtrl = element.find('input').last().controller('ngModel');
+      var ngModelCtrl = element.find('input').eq(-1).controller('ngModel');
       ngModelCtrl.$setViewValue('');
       expect(scope.list).to.have.length(1);
       expect(scope.list[0]).to.have.property('focus');
@@ -157,7 +157,7 @@ describe('incrementalList', function() {
       ];
       var t = ngModelListHtml;
       var element = compileAndDigest(t);
-      var ngModelCtrl = element.find('input').last().controller('ngModel');
+      var ngModelCtrl = element.find('input').eq(-1).controller('ngModel');
       expect(scope.list).to.have.length(5);
 
       ngModelCtrl.$setViewValue('');
@@ -187,7 +187,7 @@ describe('incrementalList', function() {
           '</ol>';
       var element = compileAndDigest(t);
       var inputs = element.find('input');
-      var lastInput = inputs.last();
+      var lastInput = inputs.eq(-1);
       var ngModelCtrl = lastInput.controller('ngModel');
 
       ngModelCtrl.$setViewValue(4);
@@ -233,7 +233,7 @@ describe('incrementalList', function() {
           </div></div></div></div>';
       var element = compileAndDigest(t);
       var inputs = element.find('input');
-      var firstInput = inputs.first();
+      var firstInput = inputs.eq(0);
       var ngModelCtrl = firstInput.controller('ngModel');
 
       expect(scope.list[0].sub[0].sub).to.have.length(2);
@@ -267,7 +267,7 @@ describe('incrementalList', function() {
           'il-min-length="3"></div>';
       var element = compileAndDigest(t);
       var inputs = element.find('input');
-      var lastInput = inputs.last();
+      var lastInput = inputs.eq(-1);
       var ngModelCtrl = lastInput.controller('ngModel');
 
       ngModelCtrl.$setViewValue('');
@@ -321,7 +321,7 @@ describe('incrementalList', function() {
           'il-max-length="6"></div>';
       var element = compileAndDigest(t);
       var inputs = element.find('input');
-      var lastInput = inputs.last();
+      var lastInput = inputs.eq(-1);
       var ngModelCtrl = lastInput.controller('ngModel');
 
       ngModelCtrl.$setViewValue('6');
@@ -344,8 +344,8 @@ describe('incrementalList', function() {
           <input type="text" ng-model="item.s" il-item-model>\
           </div></span>';
       var element = compileAndDigest(t);
-      var nNgModelCtrl = element.find('div').last().find('input').first().controller('ngModel');
-      var sNgModelCtrl = element.find('div').last().find('input').last().controller('ngModel');
+      var nNgModelCtrl = element.find('div').eq(-1).find('input').eq(0).controller('ngModel');
+      var sNgModelCtrl = element.find('div').eq(-1).find('input').eq(-1).controller('ngModel');
 
       expect(scope.list).to.have.length(2);
 

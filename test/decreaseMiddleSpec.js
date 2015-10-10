@@ -85,15 +85,15 @@ describe('ilDecreaseMiddle directive', function() {
     var inputs = element.find('input');
     expect(inputs).to.have.length(initialLength);
 
-    inputs.first().triggerHandler('focus');
-    inputs.first().controller('ngModel').$setViewValue('');
+    inputs.eq(0).triggerHandler('focus');
+    inputs.eq(0).controller('ngModel').$setViewValue('');
     inputs = element.find('input');
     expect(inputs).to.have.length(initialLength);
 
-    inputs.first().triggerHandler('blur');
+    inputs.eq(0).triggerHandler('blur');
     $timeout.flush();
     inputs = element.find('input');
     expect(inputs).to.have.length(initialLength - 1);
-    expect(inputs.first().val()).to.equal('1');
+    expect(inputs.eq(0).val()).to.equal('1');
   }));
 });

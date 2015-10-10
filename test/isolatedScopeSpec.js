@@ -42,7 +42,7 @@ describe('In an isolated scope', function() {
     expect(scope.list).to.have.length(listLength);
     expect(element.find('input')).to.have.length(listLength);
 
-    var ngModelCtrl = element.find('input').last().controller('ngModel');
+    var ngModelCtrl = element.find('input').eq(-1).controller('ngModel');
     ngModelCtrl.$setViewValue(13);
     scope.$digest();
     expect(scope.list).to.have.length(listLength + 1);

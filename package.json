@@ -4,9 +4,7 @@
   "description": "List that auto-increments and decrements",
   "main": "./angular-incremental-list",
   "scripts": {
-    "test": "jshint . --exclude-path=.gitignore --exclude='**/*.min.js' && jscs . && karma start --single-run && protractor",
-    "min": "uglifyjs angular-incremental-list.js --comments '/^!/' --compress --mangle -o angular-incremental-list.min.js",
-    "jshint": "jshint . --exclude-path=.gitignore --exclude='**/*.min.js'"
+    "test": "gulp test && protractor"
   },
   "repository": {
     "type": "git",
@@ -24,10 +22,23 @@
   ],
   "devDependencies": {
     "chai": "^3.2.0",
+    "del": "^2.0.2",
+    "event-stream": "^3.3.1",
     "finalhandler": "^0.4.0",
+    "gulp": "^3.9.0",
+    "gulp-bump": "^1.0.0",
+    "gulp-concat": "^2.6.0",
+    "gulp-footer": "^1.0.5",
+    "gulp-git": "^1.5.0",
+    "gulp-header": "^1.7.1",
+    "gulp-jscs": "^3.0.1",
+    "gulp-jshint": "^1.11.2",
+    "gulp-plumber": "^1.0.1",
+    "gulp-rename": "^1.2.2",
+    "gulp-uglify": "^1.4.1",
     "jscs": "^2.1.1",
     "jshint": "^2.8.0",
-    "karma": "0.12.x",
+    "karma": "^0.13.10",
     "karma-chai": "0.1.x",
     "karma-chrome-launcher": "0.2.x",
     "karma-mocha": "0.2.x",
@@ -37,6 +48,7 @@
     "phantomjs": "^1.9.18",
     "phantomjs-polyfill": "0.0.1",
     "protractor": "^2.2.0",
+    "run-sequence": "^1.1.4",
     "serve-static": "^1.10.0",
     "sinon": "^1.15.4"
   },

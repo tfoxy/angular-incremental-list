@@ -47,7 +47,8 @@ angular.module('myApp', ['incrementalList', ...])
 <!-- ilIncreaseOn example -->
 <!-- First and last name are required, but age is optional -->
 <ul>
-  <li ng-repeat="person in list" il-list="list" il-increase-on="person.firstName && person.lastName">
+  <li ng-repeat="person in list" il-list="list"
+      il-increase-on="person.firstName && person.lastName">
     <input type="text" ng-model="person.firstName" il-item-model required>
     <input type="text" ng-model="person.lastName" il-item-model required>
     <input type="number" ng-model="person.age" il-item-model>
